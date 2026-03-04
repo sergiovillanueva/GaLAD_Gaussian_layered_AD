@@ -1,0 +1,32 @@
+[project]
+name = "galad"
+version = "1.0.0"
+description = "GaLAD: Gaussian Layered Anomaly Detector for Few-Shot Industrial Inspection"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "torch>=2.2.0",
+    "torchvision>=0.17.0",
+    "transformers>=4.40.0",
+    "timm",
+    "huggingface_hub",
+    "accelerate",
+    "opencv-python",
+    "albumentations",
+    "scikit-image",
+    "scikit-learn",
+    "scipy",
+    "tqdm",
+    "pyyaml",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+baselines = [
+    "anomalib",
+]
+
+[tool.uv]
+index-url = "https://download.pytorch.org/whl/cu128"
+extra-index-url = ["https://pypi.org/simple"]
+index-strategy = "unsafe-best-match"

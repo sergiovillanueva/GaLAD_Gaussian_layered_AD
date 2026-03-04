@@ -1,0 +1,7 @@
+category,GaLAD_auroc,GaLAD_aupr,GaLAD_auspro,dinomaly_auroc,dinomaly_aupr,dinomaly_auspro,padim_auroc,padim_aupr,padim_auspro,patchcore_auroc,patchcore_aupr,patchcore_auspro,reverse_distillation_auroc,reverse_distillation_aupr,reverse_distillation_auspro
+cigarette_box,0.798,0.804,0.807,0.574,0.596,0.633,0.463,0.544,0.310,0.539,0.616,0.473,0.534,0.592,0.445
+drink_bottle,0.569,0.603,0.755,0.593,0.606,0.692,0.467,0.522,0.624,0.516,0.560,0.690,0.543,0.572,0.689
+drink_can,0.585,0.577,0.662,0.545,0.531,0.641,0.513,0.517,0.509,0.529,0.539,0.617,0.577,0.558,0.647
+food_bottle,0.575,0.673,0.679,0.609,0.672,0.716,0.548,0.625,0.585,0.535,0.617,0.602,0.578,0.656,0.673
+food_box,0.623,0.718,0.688,0.551,0.665,0.649,0.509,0.642,0.506,0.544,0.665,0.532,0.561,0.684,0.624
+food_package,0.531,0.515,0.600,0.509,0.484,0.626,0.510,0.492,0.479,0.524,0.485,0.475,0.546,0.511,0.676
