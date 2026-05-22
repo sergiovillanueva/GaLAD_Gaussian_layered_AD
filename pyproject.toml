@@ -16,6 +16,7 @@ dependencies = [
     "scikit-image",
     "scikit-learn",
     "scipy",
+    "pandas",
     "tqdm",
     "pyyaml",
     "matplotlib",

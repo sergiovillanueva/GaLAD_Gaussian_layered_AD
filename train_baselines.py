@@ -173,9 +173,10 @@ DATASETS = [
 # Models to evaluate
 MODELS = [
     "padim",
-    "patchcore", 
+    "patchcore",
     "reverse_distillation",
-    "dinomaly"
+    "dinomaly",
+    "efficient_ad",
 ]
 
 SEEDS = [0, 1, 2, 3, 4]
@@ -527,7 +528,7 @@ def train_single(dataset, model_name, max_side, max_train, seed):
         from anomalib.data.datasets.base.image import AnomalibDataset
         from anomalib.data.utils import Split
         from anomalib.engine import Engine
-        from anomalib.models import Patchcore, Padim, ReverseDistillation, Dinomaly
+        from anomalib.models import Patchcore, Padim, ReverseDistillation, Dinomaly, EfficientAd
         from lightning.pytorch.callbacks import EarlyStopping
     except Exception as e:
         raise SystemExit(
@@ -806,11 +807,15 @@ def train_single(dataset, model_name, max_side, max_train, seed):
         precision = "16-mixed"
         callbacks.append(EarlyStopping(monitor="train_loss", mode="min", patience=15, min_delta=1e-5))
     elif model_name == "dinomaly":
-        # Dinomaly requires square images divisible by 14 (448 / 14 = 32 ✓)
         pre_processor = Dinomaly.configure_pre_processor(image_size=image_size)
         model = Dinomaly(pre_processor=pre_processor)
         max_epochs = EPOCHS
-        # precision = "16-mixed" if max_train >= 10 else None  # Use FP32 to avoid NaN issues with few-shot
+        precision = None
+        callbacks.append(EarlyStopping(monitor="train_loss", mode="min", patience=15, min_delta=1e-5))
+    elif model_name == "efficient_ad":
+        pre_processor = EfficientAd.configure_pre_processor(image_size=image_size)
+        model = EfficientAd(pre_processor=pre_processor, batch_size=1)
+        max_epochs = EPOCHS
         precision = None
         callbacks.append(EarlyStopping(monitor="train_loss", mode="min", patience=15, min_delta=1e-5))
     else:
@@ -995,6 +1000,22 @@ def main():
                     key = (dataset, model, seed, train_limit_str)
 
                     if key in completed:
+                        continue
+
+                    # PaDiM at N=2 is ill-posed (singular covariance) and triggers
+                    # an Anomalib datamodule bug with empty abnormal masks. Skip it.
+                    if model == "padim" and train_size == 2:
+                        log(f"[{current}/{total}] SKIP {dataset} | padim | seed={seed} | train=2 (N=2 not supported)")
+                        continue
+
+                    # Dinomaly requires N>=5; skip at N=2.
+                    if model == "dinomaly" and train_size == 2:
+                        log(f"[{current}/{total}] SKIP {dataset} | dinomaly | seed={seed} | train=2 (N>=5 required)")
+                        continue
+
+                    # EfficientAD's default Anomalib configuration is not stable at N=2.
+                    if model == "efficient_ad" and train_size == 2:
+                        log(f"[{current}/{total}] SKIP {dataset} | efficient_ad | seed={seed} | train=2 (N=2 not supported)")
                         continue
 
                     log(f"[{current}/{total}] {dataset} | {model} | seed={seed} | train={train_limit_str}")
