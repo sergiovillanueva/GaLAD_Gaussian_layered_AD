@@ -1,8 +1,9 @@
-# New Experimental Results - Paper Revision
+# Experimental Results Summary
 
-This document summarizes the additional experiments run in response to 
-reviewer comments (EfficientAD baseline and DINOv3 same-backbone controls 
-extended to all 46 categories) together with re-computed global statistics.
+This document summarizes the experiments and the global statistical 
+analysis reported in the paper: all baselines (including EfficientAD) and 
+the DINOv3 same-backbone controls over the full 46 categories, together 
+with the aggregated global statistics.
 
 ## Data overview
 
@@ -16,7 +17,7 @@ dinov3_k1               0  230  230  230    0
 dinov3_knn              0  230  230  230    0
 efficient_ad            0  230  230  230    0
 galad                 230  230  230  230  230
-padim                   1  230  230  230  230
+padim                   0  230  230  230  230
 patchcore             230  230  230  230  230
 reverse_distillation  230  230  230  230  230
 ```
@@ -32,7 +33,7 @@ reverse_distillation  230  230  230  230  230
 | dinov3_knn | - | 0.756±0.038 | 0.786±0.026 | 0.798±0.026 | - |
 | efficient_ad | - | 0.660±0.041 | 0.681±0.035 | 0.697±0.065 | - |
 | galad | 0.754±0.058 | 0.794±0.041 | 0.804±0.032 | 0.811±0.023 | 0.811±0.015 |
-| padim | 0.549±nan | 0.629±0.044 | 0.635±0.045 | 0.639±0.051 | 0.632±0.058 |
+| padim | - | 0.629±0.044 | 0.635±0.045 | 0.639±0.051 | 0.632±0.058 |
 | patchcore | 0.744±0.028 | 0.754±0.029 | 0.763±0.016 | 0.773±0.024 | 0.792±0.035 |
 | reverse_distillation | 0.735±0.027 | 0.758±0.051 | 0.773±0.023 | 0.785±0.036 | 0.778±0.029 |
 
@@ -45,7 +46,7 @@ reverse_distillation  230  230  230  230  230
 | dinov3_knn | - | 0.766±0.028 | 0.798±0.021 | 0.810±0.019 | - |
 | efficient_ad | - | 0.628±0.060 | 0.653±0.058 | 0.666±0.062 | - |
 | galad | 0.730±0.074 | 0.787±0.040 | 0.801±0.036 | 0.812±0.017 | 0.814±0.013 |
-| padim | 0.540±nan | 0.580±0.061 | 0.586±0.063 | 0.582±0.069 | 0.561±0.080 |
+| padim | - | 0.580±0.061 | 0.586±0.063 | 0.582±0.069 | 0.561±0.080 |
 | patchcore | 0.728±0.030 | 0.744±0.026 | 0.756±0.020 | 0.767±0.020 | 0.779±0.018 |
 | reverse_distillation | 0.705±0.042 | 0.733±0.084 | 0.753±0.027 | 0.763±0.021 | 0.756±0.020 |
 
@@ -82,9 +83,9 @@ reverse_distillation  230  230  230  230  230
 | MVTec LOCO | 0.828±0.010 | 0.768±0.022 | 0.771±0.017 | 0.739±0.040 | 0.632±0.044 | 0.712±0.028 | 0.827±0.020 | 0.798±0.014 |
 | VisA | 0.887±0.018 | 0.885±0.015 | 0.881±0.019 | 0.856±0.097 | 0.683±0.054 | 0.775±0.044 | 0.951±0.010 | 0.866±0.013 |
 
-## 3. Welch's t-test: GaLAD vs new baselines (per benchmark)
+## 3. Welch's t-test: GaLAD vs baselines (per benchmark)
 
-Comparison of GaLAD vs the new baselines added in the revision, 
+Comparison of GaLAD vs the baselines, 
 with Welch's $t$-test ($p<0.05$ marked with *):
 
 ### GaLAD vs efficient_ad
@@ -227,7 +228,7 @@ Wilcoxon signed-rank + Holm-Bonferroni (GaLAD vs each):
 
 ## 5. Same-backbone comparison per benchmark (image-level AUPR)
 
-This is the critical comparison demanded by Reviewers #4 and #7. 
+This same-backbone comparison isolates the scoring stage. 
 All three methods use identical DINOv3 ViT-L/16 features and PCA preprocessing. 
 The only difference is the scoring mechanism: kNN (PatchCore-style), 
 single Gaussian (K=1), or 3-component GMM (GaLAD).
@@ -262,7 +263,7 @@ single Gaussian (K=1), or 3-component GMM (GaLAD).
 | MVTec LOCO | 0.828±0.010 | 0.827±0.020 | 0.798±0.014 |
 | VisA | 0.887±0.018 | 0.951±0.010 | 0.866±0.013 |
 
-## 6. Localization (AUsPRO) for new baselines
+## 6. Localization (AUsPRO)
 
 AUsPRO per benchmark at N=5 (including EfficientAD):
 
@@ -271,10 +272,8 @@ AUsPRO per benchmark at N=5 (including EfficientAD):
 | AutoVI | 0.654±0.080 | 0.650±0.066 | 0.672±0.060 | 0.518±0.066 | 0.536±0.092 | 0.104±0.049 |
 | BTAD | 0.918±0.044 | 0.846±0.036 | 0.821±0.233 | 0.893±0.030 | 0.612±0.054 | 0.392±0.104 |
 | GoodsAD | 0.698±0.038 | 0.565±0.026 | 0.626±0.019 | 0.660±0.031 | 0.502±0.048 | 0.143±0.074 |
-| MPDD | - | 0.814±0.053 | 0.841±0.038 | 0.888±0.030 | 0.656±0.057 | - |
 | MVTec AD | 0.910±0.039 | 0.771±0.039 | 0.817±0.047 | 0.871±0.055 | 0.549±0.099 | 0.605±0.124 |
 | MVTec LOCO | 0.632±0.053 | 0.411±0.021 | 0.506±0.031 | 0.306±0.060 | 0.271±0.079 | 0.332±0.077 |
-| VAD | - | 0.842±nan | 0.803±nan | 0.613±nan | 0.656±nan | - |
 | VisA | 0.901±0.057 | 0.756±0.039 | 0.795±0.035 | 0.804±0.053 | 0.514±0.065 | 0.447±0.101 |
 
 ## 7. TPR@TNR=95% for EfficientAD
@@ -290,4 +289,4 @@ EfficientAD TPR@TNR=95% (N=5) per benchmark:
 
 ---
 
-Generated tables in `output/tables_revision/`
+Generated tables in `results/tables_latex/`

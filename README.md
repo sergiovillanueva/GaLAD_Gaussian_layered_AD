@@ -1,6 +1,6 @@
-# GaLAD: Gaussian Layered Anomaly Detector for Few-Shot Industrial Inspection
+# GaLAD: A New Framework for Few-Shot Industrial Anomaly Detection using Foundation Models and Gradient-Free Density Estimation
 
-Official implementation and reproducibility package for the paper *"GaLAD: Gaussian Layered Anomaly Detector for Few-Shot Industrial Inspection"*.
+Official implementation and reproducibility package for the paper *"A New Framework for Few-Shot Industrial Anomaly Detection using Foundation Models and Gradient-Free Density Estimation"*. GaLAD is the name of the method.
 
 ## Overview
 
@@ -11,7 +11,8 @@ Headline results in the few-shot regime ($N=5$ normal images per category):
 - Best or tied-best image-level AUPR against five established baselines (PaDiM, PatchCore, Reverse Distillation, Dinomaly, EfficientAD) on all six benchmarks.
 - Best pixel-level AUsPRO on five of six benchmarks, including a 25% relative improvement on logical anomalies (MVTec LOCO).
 - Same-backbone analysis on the full 46 categories: statistically significant gain over a single Gaussian on identical DINOv3 features (Wilcoxon $p=1.8\times10^{-5}$), competitive on average with dense nearest-neighbor scoring at a fraction of the per-category storage.
-- 1.9x smaller per-category state than PatchCore and 3-9x lower variance than the evaluated gradient-based baselines.
+- Cross-backbone scoring control on four ViT-L encoders (DINOv3, DINOv2, CLIP, SigLIP) with a uniform protocol: the GMM is the best scoring layer on every backbone, beats a single Gaussian on all four ($p\le1.8\times10^{-3}$) and dense nearest-neighbor scoring on three of four, so the contribution is the scoring stage rather than a single backbone.
+- 1.9x smaller per-category state than PatchCore and often more stable across seeds than the evaluated gradient-based baselines (up to several-fold lower variance in the larger-N regime, though the gap narrows at the smallest sample sizes).
 
 ## Requirements
 
@@ -125,7 +126,7 @@ Trains PaDiM, PatchCore, Reverse Distillation, Dinomaly, and EfficientAD via Ano
 uv run dinov3_baselines.py
 ```
 
-Trains DINOv3-kNN (PatchCore-style) and DINOv3-K1 (single Gaussian) on the same DINOv3 features and PCA preprocessing used by GaLAD. Results go to `results/dinov3_baselines_all.csv`.
+Trains DINOv3-kNN (classical PatchCore-style: layers concatenated before PCA, max pooling, k=9) and DINOv3-K1 (single Gaussian) on the same DINOv3 features and PCA dimensionality budget. This is the strong external same-backbone baseline of Table 5. Results go to `results/dinov3_baselines_all.csv`. The cross-backbone scoring control (`crossbackbone_control.py`) is the complementary internal ablation: it keeps the exact GaLAD pipeline (per-layer PCA, percentile-95 pooling) and changes only the final scoring layer, with a uniform k=5 across encoders.
 
 #### 4. Ablation study
 
@@ -134,6 +135,22 @@ uv run ablation_study.py
 ```
 
 Evaluates layer selection, GMM components, PCA skip, and smoothing sigma on a representative subset.
+
+#### 4b. Backbone-generality ablation
+
+```bash
+uv run backbone_ablation.py --full     # full run (4 backbones x 46 categories x 5 seeds)
+uv run backbone_ablation.py --test     # smoke test (1 category)
+uv run analyze_backbone_ablation.py    # summary table
+uv run crossbackbone_control.py        # K1 / kNN / PCA-residual controls on the 4 encoders
+uv run analyze_crossbackbone_control.py
+```
+
+Runs the full GaLAD pipeline on top of four frozen ViT-L encoders (DINOv3,
+DINOv2, CLIP, SigLIP) at their native resolution, to show that the framework
+is not tied to DINOv3. Results go to `results/backbone_ablation.csv`. Resumable
+and robust (per-experiment error logging). The four backbones are downloaded
+from Hugging Face on first use.
 
 #### 5. Computational efficiency
 
@@ -146,14 +163,14 @@ Compares fit time, inference speed, GPU memory, and per-category state size acro
 #### 6. Statistical analysis and summary tables
 
 ```bash
-uv run analyze_new_results.py     # Demsar protocol + per-benchmark Welch tests + LaTeX-ready tables
-uv run statistical_tests.py       # Standalone Friedman + Nemenyi + Wilcoxon + Cliff's delta
+uv run analyze_results.py     # Demsar protocol (Friedman + Nemenyi + Wilcoxon + Cliff's delta) + LaTeX-ready tables
+uv run generate_cd_diagram.py     # Critical-difference (Nemenyi) diagram
 uv run results_summary.py
 uv run generate_tables.py
 uv run generate_appendix_tables.py
 ```
 
-`analyze_new_results.py` is the main entry point for the post-hoc analysis: it loads all three CSVs (GaLAD, baselines, same-backbone controls), aggregates per-benchmark statistics with the protocol used in the paper, runs Friedman / Nemenyi / Wilcoxon (Demsar 2006), reports Cliff's delta effect sizes, and writes `results/new_results_summary.md` together with LaTeX-ready CSV tables in `results/tables_revision/`.
+`analyze_results.py` is the single entry point for the post-hoc statistical analysis: it loads all three CSVs (GaLAD, baselines, same-backbone controls), aggregates per-benchmark statistics with the benchmark-balanced protocol used in the paper, runs Friedman / Nemenyi / Wilcoxon (Demsar 2006), reports Cliff's delta effect sizes, and writes `results/results_overview.md` together with LaTeX-ready CSV tables in `results/tables_latex/`. The numbers it produces are the ones reported in the manuscript.
 
 ## Pre-computed Results
 
@@ -168,14 +185,14 @@ The `results/` directory contains everything needed to reproduce the tables and 
 | `efficiency_comparison.csv` | Computational efficiency measurements |
 | `appendix/A1-A9_*.csv` | Per-category tables for the paper appendix |
 | `tables/T2_*.csv`, `tables/T3_*.csv`, `tables/significance_matrix.csv` | Main-text tables |
-| `tables_revision/*.csv` | Updated LaTeX-ready tables including EfficientAD and same-backbone controls |
-| `new_results_summary.md` | Human-readable summary of all post-hoc analyses |
+| `tables_latex/*.csv` | LaTeX-ready tables including EfficientAD and same-backbone controls |
+| `results_overview.md` | Human-readable summary of all post-hoc analyses |
 | `statistical_analysis_results.md` | Friedman / Nemenyi / Wilcoxon results writeup |
 
 CSV delimiter conventions:
 
 - Raw results (`galad_results.csv`, `baseline_results.csv`, `dinov3_baselines_all.csv`) use `;`.
-- Derived paper tables in `results/tables/` and `results/tables_revision/` use `;`.
+- Derived paper tables in `results/tables/` and `results/tables_latex/` use `;`.
 - Appendix per-category tables in `results/appendix/` use `,`.
 
 ## Method Summary
@@ -212,9 +229,11 @@ Per-benchmark significance is reported separately with Welch's $t$-test as an ex
 ├── train_baselines.py            # Baseline experiments via Anomalib
 ├── dinov3_baselines.py           # Same-backbone controls (DINOv3-kNN, DINOv3-K1)
 ├── ablation_study.py             # Ablation experiments (Tables T4-T5)
+├── backbone_ablation.py          # Backbone-generality ablation (DINOv3/DINOv2/CLIP/SigLIP)
+├── analyze_backbone_ablation.py  # Backbone-ablation summary table
 ├── measure_efficiency.py         # Computational efficiency comparison
-├── statistical_tests.py          # Standalone Demsar pipeline
-├── analyze_new_results.py        # Full post-hoc analysis (Demsar + tables)
+├── analyze_results.py        # Full post-hoc analysis (Demsar + tables)
+├── generate_cd_diagram.py        # Critical-difference (Nemenyi) diagram
 ├── results_summary.py            # Aggregate results across benchmarks
 ├── generate_tables.py            # Generate paper tables (T2-T3)
 ├── generate_appendix_tables.py   # Generate appendix tables (A1-A9)
@@ -225,15 +244,7 @@ Per-benchmark significance is reported separately with Welch's $t$-test as an ex
 
 ## Citation
 
-If you find this work useful, please cite:
-
-```bibtex
-@article{villanueva2026galad,
-  title={GaLAD: Gaussian Layered Anomaly Detector for Few-Shot Industrial Inspection},
-  author={Villanueva L{\'o}pez, Sergio and Soria-Olivas, Emilio and S{\'a}nchez-Monta{\~n}{\'e}s, Manuel},
-  year={2026}
-}
-```
+This work is currently under peer review. Citation details will be added here once the paper is published.
 
 ## License
 

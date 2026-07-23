@@ -1,0 +1,7 @@
+method;storage_mb;storage_source;infer_ms;infer_source;fit_time_s;fit_source
+GaLAD;6.5;measured: PCA+GMM head size (efficiency_comparison.csv);57;measured over 100 imgs after warmup;11;measured fit incl. feature extraction (efficiency_comparison.csv, MVTec AD avg)
+PatchCore;12.2;measured: coreset memory bank (efficiency_comparison.csv);55;measured (Anomalib);16;train_time_s, baseline_results.csv, MVTec AD N=10
+PaDiM;10.0;indicative: per-location Gaussian params;41;measured (Anomalib);17;train_time_s, baseline_results.csv, MVTec AD N=10
+EfficientAD;49.0;indicative: student-teacher weights;39;measured (Anomalib);238;train_time_s, baseline_results.csv, MVTec AD N=10
+Reverse Distillation;170.0;indicative: encoder-decoder weights;65;measured (Anomalib);245;train_time_s, baseline_results.csv, MVTec AD N=10
+Dinomaly;234.2;measured: decoder weights (efficiency_comparison.csv);38;measured (Anomalib);285;train_time_s, baseline_results.csv, MVTec AD N=10

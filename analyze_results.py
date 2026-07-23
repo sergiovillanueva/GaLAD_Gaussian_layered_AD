@@ -1,16 +1,16 @@
 """
-Rigorous analysis of new experiments for the paper revision.
+Statistical analysis of the experimental results for the paper.
 
 Computes:
 - Per-benchmark averages with proper std pooling
-- Welch's t-test GaLAD vs each new baseline
+- Welch's t-test GaLAD vs each baseline
 - Friedman + Nemenyi + Wilcoxon (Demsar) including new methods
 - Cliff's delta effect sizes
 - LaTeX-ready tables
 
 Outputs:
-- results/new_results_summary.md (human-readable summary)
-- results/tables_revision/*.csv (LaTeX-ready tables)
+- results/results_overview.md (human-readable summary)
+- results/tables_latex/*.csv (LaTeX-ready tables)
 """
 import math
 from itertools import combinations
@@ -21,11 +21,15 @@ import pandas as pd
 from scipy.stats import friedmanchisquare, ttest_ind, wilcoxon, studentized_range
 
 OUTPUT_DIR = Path("results")
-TABLES_DIR = OUTPUT_DIR / "tables_revision"
+TABLES_DIR = OUTPUT_DIR / "tables_latex"
 TABLES_DIR.mkdir(parents=True, exist_ok=True)
-SUMMARY_MD = OUTPUT_DIR / "new_results_summary.md"
+SUMMARY_MD = OUTPUT_DIR / "results_overview.md"
 
 ALPHA = 0.05
+
+# The 46-category evaluation set used throughout the paper. Exploratory datasets
+# (MPDD, VAD, mvtec_ad_2) are excluded everywhere for consistency.
+KEEP_PREFIXES = ("mvtec_AD/", "mvtec_loco_AD/", "VisA/", "AutoVI/", "btad/", "GoodsAD/")
 
 
 def benchmark_of(dataset: str) -> str:
@@ -60,8 +64,7 @@ def load_all():
     # Restrict to the 46 categories that form the evaluation set in the paper.
     # MPDD, VAD and mvtec_ad_2 may appear in some CSVs but are not part of the
     # main evaluation.
-    keep_prefixes = ("mvtec_AD/", "mvtec_loco_AD/", "VisA/", "AutoVI/", "btad/", "GoodsAD/")
-    df = df[df["dataset"].str.startswith(keep_prefixes)].copy()
+    df = df[df["dataset"].str.startswith(KEEP_PREFIXES)].copy()
 
     return df
 
@@ -268,10 +271,11 @@ def main():
     print(f"  datasets={df['dataset'].nunique()}, benchmarks={df['benchmark'].nunique()}")
 
     md = []
-    md.append("# New Experimental Results - Paper Revision\n")
-    md.append("This document summarizes the additional experiments run in response to ")
-    md.append("reviewer comments (EfficientAD baseline and DINOv3 same-backbone controls ")
-    md.append("extended to all 46 categories) together with re-computed global statistics.\n")
+    md.append("# Experimental Results Summary\n")
+    md.append("This document summarizes the experiments and the global statistical ")
+    md.append("analysis reported in the paper: all baselines (including EfficientAD) and ")
+    md.append("the DINOv3 same-backbone controls over the full 46 categories, together ")
+    md.append("with the aggregated global statistics.\n")
 
     # Data overview
     md.append("## Data overview\n")
@@ -358,14 +362,14 @@ def main():
         sub.to_csv(TABLES_DIR / f"per_benchmark_N{N}_aupr.csv", index=False, sep=";")
 
     # ============================================
-    # 3) Welch's t-test GaLAD vs new baselines per benchmark
+    # 3) Welch's t-test GaLAD vs baselines per benchmark
     # ============================================
-    md.append("## 3. Welch's t-test: GaLAD vs new baselines (per benchmark)\n")
+    md.append("## 3. Welch's t-test: GaLAD vs baselines (per benchmark)\n")
     welch = welch_test_per_benchmark(df, ref_model="galad", metric="img_aupr")
     new_baselines = ["efficient_ad", "dinov3_knn", "dinov3_k1"]
     welch_new = welch[welch["vs_model"].isin(new_baselines)].copy()
     welch_new.to_csv(TABLES_DIR / "welch_tests_new_baselines.csv", index=False, sep=";")
-    md.append("Comparison of GaLAD vs the new baselines added in the revision, ")
+    md.append("Comparison of GaLAD vs the baselines, ")
     md.append("with Welch's $t$-test ($p<0.05$ marked with *):\n")
     for vs_model in new_baselines:
         sub = welch_new[welch_new["vs_model"] == vs_model]
@@ -380,7 +384,7 @@ def main():
         md.append("")
 
     # ============================================
-    # 4) Demsar protocol (Friedman + Nemenyi + Wilcoxon) - updated with new baselines
+    # 4) Demsar protocol (Friedman + Nemenyi + Wilcoxon)
     # ============================================
     md.append("## 4. Global statistical analysis (Demsar 2006)\n")
     md.append("Following the original paper's protocol, we average AUPR over 5 seeds ")
@@ -456,10 +460,10 @@ def main():
     wilc_sb.to_csv(TABLES_DIR / "wilcoxon_same_backbone.csv", index=False, sep=";")
 
     # ============================================
-    # 5) Per-benchmark same-backbone analysis (NEW: now covers all 6 benchmarks)
+    # 5) Per-benchmark same-backbone analysis (all 6 benchmarks)
     # ============================================
     md.append("## 5. Same-backbone comparison per benchmark (image-level AUPR)\n")
-    md.append("This is the critical comparison demanded by Reviewers #4 and #7. ")
+    md.append("This same-backbone comparison isolates the scoring stage. ")
     md.append("All three methods use identical DINOv3 ViT-L/16 features and PCA preprocessing. ")
     md.append("The only difference is the scoring mechanism: kNN (PatchCore-style), ")
     md.append("single Gaussian (K=1), or 3-component GMM (GaLAD).\n")
@@ -486,7 +490,7 @@ def main():
     # ============================================
     # 6) Localization (AUsPRO) - only from baseline CSV
     # ============================================
-    md.append("## 6. Localization (AUsPRO) for new baselines\n")
+    md.append("## 6. Localization (AUsPRO)\n")
     if "auspro" in df.columns:
         # Available only for galad and baseline models
         pass
@@ -495,7 +499,9 @@ def main():
     base_pix = pd.read_csv(OUTPUT_DIR / "baseline_results.csv", sep=";")
     pix_cols = ["dataset", "model", "seed", "train_limit", "auspro"]
     pix_df = pd.concat([galad_pix[pix_cols], base_pix[pix_cols]], ignore_index=True)
-    pix_df = pix_df[~pix_df["dataset"].str.startswith("mvtec_ad_2/")].copy()
+    # Restrict to the same 46-category evaluation set as the rest of the analysis
+    # (drops MPDD, VAD, mvtec_ad_2 and any other exploratory datasets).
+    pix_df = pix_df[pix_df["dataset"].str.startswith(KEEP_PREFIXES)].copy()
     pix_df = pix_df.drop_duplicates(subset=["dataset", "model", "seed", "train_limit"], keep="last")
     pix_df["benchmark"] = pix_df["dataset"].apply(benchmark_of)
     pix_df = pix_df.dropna(subset=["auspro"])
@@ -534,7 +540,7 @@ def main():
             md.append("")
 
     md.append("---\n")
-    md.append("Generated tables in `results/tables_revision/`\n")
+    md.append("Generated tables in `results/tables_latex/`\n")
     write_md(md)
     print(f"\nSummary written to {SUMMARY_MD}")
     print(f"Tables in {TABLES_DIR}/")

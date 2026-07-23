@@ -181,6 +181,55 @@ GaLAD's localization advantage is both large and statistically unambiguous,
 in contrast to the detection (AUPR) result where the margin over the strongest
 baselines is smaller.
 
+## Cross-backbone scoring control (image-level, 46 categories, N=10)
+
+Four scoring layers are evaluated on the same frozen features and per-layer PCA
+of the four ViT-L encoders (DINOv3, DINOv2, CLIP, SigLIP), on the full
+46-category benchmark with 5 seeds: GMM (K=3, GaLAD default), single Gaussian
+(K=1), dense kNN (k=5, 10^4 cap), and a PCA subspace reconstruction-residual
+score. The K=1, kNN and subspace variants come from one script that shares the
+feature extraction and PCA across methods (2760 control experiments); the GMM
+K=3 column is the GaLAD default from the backbone-generality table.
+
+| Backbone | GMM AUROC/AUPR | K=1 AUROC/AUPR | kNN AUROC/AUPR | Subspace AUROC/AUPR |
+| --- | :---: | :---: | :---: | :---: |
+| DINOv3 ViT-L/16 | 0.828/0.839 | 0.807/0.825 | 0.805/0.825 | 0.829/0.838 |
+| DINOv2 ViT-L/14 | 0.816/0.831 | 0.775/0.804 | 0.796/0.822 | 0.824/0.835 |
+| CLIP ViT-L/14   | 0.823/0.833 | 0.790/0.811 | 0.800/0.821 | 0.823/0.831 |
+| SigLIP ViT-L/16 | 0.827/0.837 | 0.798/0.817 | 0.800/0.820 | 0.829/0.836 |
+
+Paired Wilcoxon over the 46 per-category mean AUPR scores:
+
+| Backbone | p (GMM vs K1) | p (GMM vs kNN) | p (GMM vs Subspace) |
+| --- | :---: | :---: | :---: |
+| DINOv3 | 1.8e-3 | 1.2e-2 | 1.6e-1 (tie) |
+| DINOv2 | 4.7e-5 | 1.6e-1 | 8.7e-3 (subspace better) |
+| CLIP   | 3.4e-7 | 5.2e-5 | 7.7e-1 (tie) |
+| SigLIP | 1.8e-9 | 2.2e-6 | 4.7e-1 (tie) |
+
+Reading the cross-backbone control:
+
+- The gain over the single Gaussian (K=1) is real and transfers: the GMM beats
+  K=1 on both metrics on every backbone, significantly in AUPR in every case
+  (smallest p = 1.8e-9 for SigLIP). Against dense kNN (k=5) the GMM is ahead on
+  all four, significantly on three.
+- The most informative comparison is GMM vs subspace residual: they are
+  statistically indistinguishable on three of four encoders, and the subspace
+  model is marginally better on DINOv2. The improvement therefore comes from
+  using a non-linear model beyond a single Gaussian, not from the
+  Gaussian-mixture form specifically. Two simple parametric models (K=3 mixture
+  and PCA subspace residual) reach the same accuracy and both beat K=1 and kNN.
+- We keep the GMM for its calibrated likelihood, fixed small size, and ability
+  to flag both out-of-subspace patches and low-density regions inside the
+  subspace, while noting the framework is robust to this choice.
+- All effects are small in absolute size (mean paired AUPR gains +0.009 to
+  +0.027 over K=1, Cliff's |delta| < 0.10); the consistency across the 46
+  categories drives the significance.
+- This control is not directly comparable to the DINOv3 same-backbone table
+  (Section above): there kNN uses the classical PatchCore recipe (concatenated
+  PCA, max pooling, k=9), which is stronger and ties GaLAD; here every scoring
+  layer runs inside the exact GaLAD pipeline with uniform k=5.
+
 ## Backbone generality (image-level AUROC / AUPR, 46 categories)
 
 Full GaLAD pipeline kept fixed, only the frozen encoder swapped, evaluated on

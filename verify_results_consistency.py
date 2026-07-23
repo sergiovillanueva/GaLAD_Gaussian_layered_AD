@@ -1,6 +1,6 @@
 """Verify that GaLAD/results matches the paper artifacts and/or root output/.
 
-This script is meant for reviewers (and for sanity checks before pushing to GitHub).
+This script is a reproducibility and sanity check on the released results.
 It compares:
 - Raw results: results/{galad_results,baseline_results}.csv
 - Aggregates: results/{results_per_class,results_per_benchmark}.csv
