@@ -1,4 +1,0 @@
-category,GaLAD_auroc,GaLAD_aupr,GaLAD_auspro,dinomaly_auroc,dinomaly_aupr,dinomaly_auspro,padim_auroc,padim_aupr,padim_auspro,patchcore_auroc,patchcore_aupr,patchcore_auspro,reverse_distillation_auroc,reverse_distillation_aupr,reverse_distillation_auspro
-01,0.985,0.995,0.947,0.999,1.000,0.956,0.983,0.994,0.896,0.997,0.999,0.930,0.852,0.919,0.754
-02,0.914,0.986,0.879,0.811,0.968,0.820,0.738,0.956,0.705,0.876,0.979,0.822,0.844,0.973,0.820
-03,1.000,1.000,0.929,0.998,0.973,0.903,0.495,0.129,0.234,0.950,0.802,0.785,0.999,0.991,0.889

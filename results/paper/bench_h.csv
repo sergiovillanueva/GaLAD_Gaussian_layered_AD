@@ -1,0 +1,19 @@
+backbone,resize,dataset,method,n_train,state_mib,ref_extract_s,fit_s,forward_ms,score_ms,score_ms_fp32,fp32_max_rel_diff,peak_gpu_mib,gpu
+dinov3h,square,mvtec_AD/bottle,galad,1,5.55,0.36,6.70,63.6,13.52,5.33,1.48e-04,5539,NVIDIA RTX A5000
+dinov3h,square,mvtec_AD/bottle,adino,1,30.62,0.32,0.04,63.6,2.56,2.56,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,mvtec_AD/bottle,galad,2,5.55,0.68,11.49,63.6,13.40,5.26,1.24e-04,5584,NVIDIA RTX A5000
+dinov3h,square,mvtec_AD/bottle,adino,2,61.25,0.63,0.04,63.6,2.49,2.49,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,mvtec_AD/bottle,galad,5,5.55,1.81,32.83,63.6,12.93,4.76,1.32e-04,5584,NVIDIA RTX A5000
+dinov3h,square,mvtec_AD/bottle,adino,5,153.12,1.74,0.13,63.6,3.88,3.88,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,VisA/candle,galad,1,5.55,0.32,6.27,76.4,13.51,5.01,2.73e-04,5539,NVIDIA RTX A5000
+dinov3h,square,VisA/candle,adino,1,30.62,0.32,0.02,76.4,2.50,2.50,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,VisA/candle,galad,2,5.55,0.72,16.82,76.4,13.78,4.94,2.95e-04,5584,NVIDIA RTX A5000
+dinov3h,square,VisA/candle,adino,2,61.25,0.64,0.06,76.4,3.46,3.46,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,VisA/candle,galad,5,5.55,1.85,37.73,76.4,13.62,5.33,3.16e-04,5584,NVIDIA RTX A5000
+dinov3h,square,VisA/candle,adino,5,153.12,1.73,0.13,76.4,3.90,3.90,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,AutoVI/engine_wiring,galad,1,5.55,0.32,5.99,76.8,13.35,5.34,2.32e-04,5539,NVIDIA RTX A5000
+dinov3h,square,AutoVI/engine_wiring,adino,1,30.62,0.32,0.02,76.8,2.54,2.54,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,AutoVI/engine_wiring,galad,2,5.55,0.67,18.63,76.8,13.64,5.28,2.30e-04,5584,NVIDIA RTX A5000
+dinov3h,square,AutoVI/engine_wiring,adino,2,61.25,0.63,0.05,76.8,2.90,2.90,0.00e+00,5584,NVIDIA RTX A5000
+dinov3h,square,AutoVI/engine_wiring,galad,5,5.55,1.72,30.95,76.8,13.56,5.01,2.68e-04,5584,NVIDIA RTX A5000
+dinov3h,square,AutoVI/engine_wiring,adino,5,153.12,1.75,0.13,76.8,3.89,3.89,0.00e+00,5584,NVIDIA RTX A5000
