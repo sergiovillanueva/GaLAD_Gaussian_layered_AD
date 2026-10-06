@@ -42,3 +42,44 @@ ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout(pad=0.3)
 plt.savefig(FIG / "per_category.pdf")
 print(f"wrote {FIG / 'per_category.pdf'}; range {d.min():+.1f} to {d.max():+.1f}")
+
+# Figure: image AP on the held-out categories and AU-PRO over all categories against N.
+R = Path("output/server_run")
+L = pd.read_csv(R / "l_square.csv")
+O = pd.read_csv("output/adino_official.csv").assign(method="official").rename(columns={"aupro_std": "aupro_30"})
+D = pd.concat([L[["dataset", "method", "n_train", "seed", "img_ap", "aupro_30"]],
+               O[["dataset", "method", "n_train", "seed", "img_ap", "aupro_30"]]])
+D = D[D.dataset.isin(L.dataset.unique())]
+held = ~D.dataset.str.startswith(("mvtec_AD", "VisA"))
+STYLE = {"official": ("AnomalyDINO (official)", "#999999", "s", "--"),
+         "adino": ("AnomalyDINO (DINOv3-L)", "#7570b3", "o", "--"),
+         "galad": ("GaLAD", "#d95f02", "D", "-")}
+fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.7))
+for ax, data, metric, title in ((axes[0], D[held], "img_ap", "(a) Image AP, held-out categories"),
+                                (axes[1], D, "aupro_30", "(b) AU-PRO (FPR $\\leq$ 0.3), all categories")):
+    for m, (lab, col, mk, ls) in STYLE.items():
+        y = data[data.method == m].groupby(["n_train", "dataset"])[metric].mean().groupby("n_train").mean() * 100
+        ax.plot(y.index, y.values, ls, color=col, marker=mk, ms=4, lw=1.5 if m == "galad" else 1.1, label=lab)
+    ax.set_xticks([1, 2, 4, 5])
+    ax.set_xlabel("Reference images $N$", fontsize=8)
+    ax.set_title(title, fontsize=8)
+    ax.tick_params(labelsize=7)
+    ax.grid(alpha=0.3, lw=0.5)
+    ax.spines[["top", "right"]].set_visible(False)
+axes[0].set_ylabel("%", fontsize=8)
+axes[0].legend(fontsize=7, frameon=False, loc="lower right")
+plt.tight_layout(pad=0.4)
+plt.savefig(FIG / "vs_n.pdf")
+print(f"wrote {FIG / 'vs_n.pdf'}")
+
+# Thumbnails for the pipeline figure (Figure 1): a reference image, a test image and the GaLAD map of
+# the MVTec AD capsule example of Figure 3 (maps cached by make_paper_qualitative.py).
+import numpy as np  # noqa: E402
+from PIL import Image  # noqa: E402
+
+z = np.load("output/qualitative_maps.npz")
+Image.open("data/mvtec_AD/capsule/train/good/000.png").convert("RGB").resize((224, 224)).save(FIG / "fig1_reference.png")
+Image.fromarray(z["0_img"]).resize((224, 224)).save(FIG / "fig1_test.png")
+rgb = (plt.get_cmap("inferno")(np.clip(z["0_galad"] / 2, 0, 1))[..., :3] * 255).astype(np.uint8)
+Image.fromarray(rgb).resize((224, 224)).save(FIG / "fig1_map.png")
+print("wrote fig1 thumbnails")
