@@ -1,5 +1,0 @@
-backbone;resolution;auroc_mean;auroc_std;aupr_mean;aupr_std
-DINOv3 ViT-L/16;448;0.828;0.1619;0.8388;0.199
-DINOv2 ViT-L/14;448;0.8164;0.1622;0.831;0.203
-CLIP ViT-L/14;224;0.8233;0.168;0.833;0.213
-SigLIP ViT-L/16;256;0.8269;0.1709;0.8372;0.2158

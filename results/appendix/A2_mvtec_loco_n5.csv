@@ -1,6 +1,0 @@
-category,GaLAD_auroc,GaLAD_aupr,GaLAD_auspro,dinomaly_auroc,dinomaly_aupr,dinomaly_auspro,padim_auroc,padim_aupr,padim_auspro,patchcore_auroc,patchcore_aupr,patchcore_auspro,reverse_distillation_auroc,reverse_distillation_aupr,reverse_distillation_auspro
-breakfast_box,0.764,0.867,0.620,0.643,0.778,0.474,0.409,0.578,0.395,0.720,0.840,0.681,0.582,0.750,0.580
-juice_bottle,0.811,0.921,0.704,0.578,0.802,0.146,0.413,0.670,0.120,0.485,0.733,0.052,0.678,0.842,0.392
-pushpins,0.563,0.627,0.609,0.540,0.605,0.111,0.496,0.563,0.351,0.545,0.612,0.421,0.595,0.674,0.493
-screw_bag,0.561,0.718,0.495,0.602,0.725,0.329,0.456,0.650,0.153,0.639,0.752,0.569,0.536,0.683,0.443
-splicing_connectors,0.711,0.814,0.732,0.758,0.845,0.467,0.561,0.666,0.336,0.678,0.783,0.332,0.606,0.727,0.621

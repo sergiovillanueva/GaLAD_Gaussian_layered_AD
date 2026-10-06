@@ -1,6 +1,0 @@
-category,GaLAD_auroc,GaLAD_aupr,GaLAD_auspro,dinomaly_auroc,dinomaly_aupr,dinomaly_auspro,padim_auroc,padim_aupr,padim_auspro,patchcore_auroc,patchcore_aupr,patchcore_auspro,reverse_distillation_auroc,reverse_distillation_aupr,reverse_distillation_auspro
-engine_wiring,0.661,0.674,0.561,0.591,0.586,0.320,0.555,0.551,0.367,0.569,0.579,0.401,0.597,0.595,0.609
-pipe_clip,0.579,0.482,0.325,0.520,0.460,0.155,0.538,0.491,0.249,0.544,0.468,0.410,0.597,0.491,0.418
-tank_screw,0.500,0.225,0.637,0.346,0.171,0.413,0.478,0.224,0.565,0.450,0.198,0.632,0.456,0.220,0.504
-underbody_pipes,0.908,0.902,0.898,0.969,0.952,0.958,0.657,0.625,0.796,0.986,0.987,0.918,0.968,0.974,0.932
-underbody_screw,0.727,0.169,0.847,0.524,0.068,0.742,0.218,0.031,0.704,0.814,0.114,0.888,0.775,0.142,0.899

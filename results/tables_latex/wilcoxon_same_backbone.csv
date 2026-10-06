@@ -1,3 +1,0 @@
-model;W;p_raw;mean_diff;ref_better;rank;alpha_adj;reject
-dinov3_k1;128.0;1.8442277752621745e-05;0.02324420000000001;True;1;0.025;True
-dinov3_knn;424.0;0.20712819215054878;0.004899775362318834;True;2;0.05;False
