@@ -95,7 +95,7 @@ for r, (ds, img, gt, am, gm) in enumerate(rows):
         elif c == 1:
             a.imshow(p, cmap="gray", vmin=0, vmax=1)
         else:
-            a.imshow(p, cmap="inferno", vmin=0, vmax=2)
+            im = a.imshow(p, cmap="inferno", vmin=0, vmax=2)
             a.contour(gt, levels=[0.5], colors="cyan", linewidths=0.6)
         a.set_xticks([])
         a.set_yticks([])
@@ -103,6 +103,10 @@ for r, (ds, img, gt, am, gm) in enumerate(rows):
             a.set_title(titles[c], fontsize=8)
         if c == 0:
             a.set_ylabel(f"{NAMES[ds.split('/')[0]]}\n{ds.split('/')[1].replace('_', ' ')}", fontsize=7)
-plt.tight_layout(pad=0.3)
+plt.tight_layout(pad=0.3, rect=(0, 0.035, 1, 1))
+cax = fig.add_axes([0.52, 0.012, 0.45, 0.009])
+fig.colorbar(im, cax=cax, orientation="horizontal")
+cax.tick_params(labelsize=6)
+cax.set_xlabel("map / 99th percentile of the maps of normal images", fontsize=6, labelpad=1)
 plt.savefig("paper/electronics/figs/examples.pdf", dpi=200)
 SE.log("wrote paper/electronics/figs/examples.pdf")
