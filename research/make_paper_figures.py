@@ -27,6 +27,10 @@ for b in BENCH:
     held_out = b not in ("mvtec_AD", "VisA")
     xs = range(x, x + len(s))
     ax.bar(xs, s.values, color="#d95f02" if held_out else "#7570b3", width=0.8)
+    for xi, (cat, v) in zip(xs, s.items()):
+        if cat in ("mvtec_loco_AD/screw_bag", "VisA/pipe_fryum"):  # the two losses discussed in the text
+            ax.annotate(cat.split("/")[1].replace("_", " "), (xi, v), xytext=(4, -2), textcoords="offset points",
+                        fontsize=6, va="top")
     ticks.append((x + (len(s) - 1) / 2, NAMES[b]))
     x += len(s) + 1
     ax.axvline(x - 1, color="0.85", lw=0.6)
