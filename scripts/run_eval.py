@@ -1,11 +1,11 @@
-"""Evaluate GaLAD and AnomalyDINO on the same DINOv3 backbone, as in the paper (Tables 2-4, 6).
+"""Evaluate GaLAD and AnomalyDINO on the same DINOv3 backbone, as in the paper (Tables 2-5, A1-A3).
 
 For every category, N and draw: image AUROC and AP, AU-PRO up to FPR 0.3 and 0.05, pixel AUROC and AP.
 Rows are appended to results/reproduced/<tag>.csv (finished units are skipped, so runs can be resumed).
 
 Usage:
   python scripts/run_eval.py --datasets VisA/pcb1 btad/02 --ns 1 2 4 5 --seeds 0 1 2 3 4
-  python scripts/run_eval.py --all            # the 47 categories of the paper
+  python scripts/run_eval.py --all            # the 55 categories of the paper
 """
 
 import argparse
@@ -32,6 +32,7 @@ CATEGORIES = {
     "AutoVI": ["engine_wiring", "pipe_clip", "pipe_staple", "tank_screw", "underbody_pipes", "underbody_screw"],
     "btad": ["01", "02", "03"],
     "GoodsAD": ["cigarette_box", "drink_bottle", "drink_can", "food_bottle", "food_box", "food_package"],
+    "mvtec_ad_2": ["can", "fabric", "fruit_jelly", "rice", "sheet_metal", "vial", "wallplugs", "walnuts"],
 }
 FIELDS = ["dataset", "method", "n_train", "seed", "img_ap", "img_auroc", "aupro_30", "aupro_05", "pix_auroc", "pix_ap"]
 
@@ -42,7 +43,7 @@ p.add_argument("--ns", nargs="+", type=int, default=[1, 2, 4, 5])
 p.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2, 3, 4])
 p.add_argument("--backbone", default="dinov3l")
 p.add_argument("--data", default="data")
-p.add_argument("--tag", default="l_square")
+p.add_argument("--tag", default="final_square")
 a = p.parse_args()
 datasets = [f"{b}/{c}" for b, cs in CATEGORIES.items() for c in cs] if a.all else a.datasets
 

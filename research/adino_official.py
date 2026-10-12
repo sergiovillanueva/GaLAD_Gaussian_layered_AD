@@ -24,6 +24,7 @@ p.add_argument("--ns", nargs="+", type=int, default=[1, 2, 4, 5])
 p.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2, 3, 4])
 p.add_argument("--threads", type=int, default=4)
 p.add_argument("--no-mask", action="store_true", help="Disable background masking everywhere (masking=0 rows, separate CSV).")
+p.add_argument("--out", help="CSV path (default output/adino_official.csv); adds AU-PRO up to FPR 0.05 and 0.01.")
 a = p.parse_args()
 
 _argv, sys.argv = sys.argv, [sys.argv[0], "--stage", "adino", "--backbone", "dinov2s", "--threads", str(a.threads)]
@@ -46,9 +47,9 @@ from transformers import AutoModel  # noqa: E402
 
 from pixel_metrics_std import mask_regions, std_pixel_metrics_binned  # noqa: E402
 
-OUT = Path("output/adino_official_nomask.csv" if a.no_mask else "output/adino_official.csv")
+OUT = Path(a.out or ("output/adino_official_nomask.csv" if a.no_mask else "output/adino_official.csv"))
 FIELDS = ["timestamp", "dataset", "n_train", "seed", "masking", "img_ap", "img_auroc",
-          "aupro_std", "pix_auroc", "pix_ap"]
+          "aupro_std", "pix_auroc", "pix_ap"] + (["aupro_05", "aupro_01"] if a.out else [])
 MASKED_MVTEC = {"capsule", "hazelnut", "pill", "screw", "toothbrush"}
 MEAN, STD = np.array([0.485, 0.456, 0.406]), np.array([0.229, 0.224, 0.225])
 DEV = torch.device("cuda")
@@ -57,7 +58,7 @@ DEV = torch.device("cuda")
 def masking_for(ds):
     if a.no_mask:
         return False
-    bench, cat = ds.split("/")
+    bench, cat = (ds.split("/") + [""])[:2]  # single-category benchmarks such as VAD have no "/"
     return bench == "VisA" or (bench == "mvtec_AD" and cat in MASKED_MVTEC)
 
 
@@ -138,10 +139,13 @@ def main():
                     m = cv2.resize(d.reshape(grid).astype(np.float32), (E.RES, E.RES), interpolation=cv2.INTER_LINEAR)
                     maps.append(gaussian_filter(m, sigma=4))
                 au, ap = E.metrics(labels, np.array(scores))
-                aupro, pau, pap = std_pixel_metrics_binned(maps, masks, regions)
+                pro, pau, pap = std_pixel_metrics_binned(maps, masks, regions, limit=(0.3, 0.05, 0.01))
+                aupro = None if pro is None else pro[0]
                 row = dict(timestamp=f"{datetime.now():%Y-%m-%d %H:%M:%S}", dataset=ds, n_train=n, seed=seed,
                            masking=int(use_mask), img_ap=f"{ap:.4f}", img_auroc=f"{au:.4f}", aupro_std=E.fmt(aupro),
                            pix_auroc=E.fmt(pau), pix_ap=E.fmt(pap))
+                if a.out:
+                    row.update(aupro_05=E.fmt(None if pro is None else pro[1]), aupro_01=E.fmt(None if pro is None else pro[2]))
                 new = not OUT.exists()
                 with open(OUT, "a", newline="") as f:
                     w = csv.DictWriter(f, fieldnames=FIELDS)
