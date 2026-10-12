@@ -1,0 +1,17 @@
+extractor,setting,batch,ms_per_image,finite,gpu,tensorrt,torch
+galad,pytorch_eval,1,40.11,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,pytorch_opt,1,22.48,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,tensorrt_bf16,1,15.14,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,tensorrt_fp16,1,10.67,False,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,pytorch_eval,16,28.11,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,pytorch_opt,16,18.32,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,tensorrt_bf16,16,14.56,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+galad,tensorrt_fp16,16,9.04,False,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,pytorch_eval,1,42.92,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,pytorch_opt,1,30.92,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,tensorrt_bf16,1,19.39,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,tensorrt_fp16,1,14.04,False,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,pytorch_eval,16,28.58,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,pytorch_opt,16,23.15,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,tensorrt_bf16,16,18.48,True,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128
+anomalydino,tensorrt_fp16,16,11.22,False,NVIDIA GeForce RTX 3080 Ti Laptop GPU,10.9.0.34,2.7.1+cu128

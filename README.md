@@ -62,7 +62,8 @@ The gains are largest on the smallest defects.
 | AnomalyDINO with its official configuration | `anomalydino_official.csv` |
 | PatchCore (Anomalib 2.2 defaults, 448 px) | `patchcore.csv` |
 | Table 6 (ablation on the development categories) | `ablation_ap.csv`, `ablation_aupro.csv`, `ablation_mahalanobis.csv` |
-| Table 7 and Section 5.5 (cost; backbone in batches) | `cost.csv`, `cost_backbone.csv` |
+| Table 7 (cost) | `cost.csv` |
+| Table 8 (feature extraction time in PyTorch and TensorRT; `research/bench_trt.py`) | `cost_tensorrt.csv` |
 | Defect size (Figure 4, Appendix D) | `defect_area.csv`, `defect_regions.csv`, `interior_aupro.csv` |
 | MVTec AD 2 lighting conditions (Discussion) | `mvtec_ad_2_lighting.csv` |
 | Eight and sixteen reference images; DINOv2 ViT-L/14 with registers (Appendix D) | `n8_n16.csv`, `dinov2l_registers.csv` |

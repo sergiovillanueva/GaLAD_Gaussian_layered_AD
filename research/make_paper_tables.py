@@ -441,6 +441,20 @@ if VR.exists():
         pr = paired(cm(g_, metric), cm(a_, metric))
         mac(f"Vtwo{M}", pr[0]); mac(f"Vtwo{M}Lo", pr[1]); mac(f"Vtwo{M}Hi", pr[2])
         mac(f"Vtwo{M}W", int(pr[3]), "{:d}"); mac(f"Vtwo{M}L", int(pr[5]), "{:d}")
+BT = Path("output/bench_trt.csv")  # bench_trt.py in the isolated TensorRT bench (only configurations with finite outputs)
+if BT.exists():
+    bt = rd(BT)
+    bt = bt[bt.finite.astype(str) == "True"].set_index(["setting", "extractor", "batch"]).ms_per_image
+    lines = []
+    for setting, label in (("pytorch_eval", "PyTorch, as evaluated (autocast float16)"),
+                           ("pytorch_opt", "PyTorch, bfloat16, CUDA graph"), ("tensorrt_bf16", "TensorRT, bfloat16")):
+        lines.append(label + " & " + " & ".join(f1(bt[(setting, e, b)]) for e in ("galad", "anomalydino") for b in (1, 16)) + r" \\")
+    (OUT / "speed.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    for setting, key in (("pytorch_eval", "Eval"), ("pytorch_opt", "Opt"), ("tensorrt_bf16", "Trt")):
+        mac(f"Speed{key}Galad", bt[(setting, "galad", 1)]); mac(f"Speed{key}Adino", bt[(setting, "anomalydino", 1)])
+    if Path("output/server/bench_final.csv").exists():
+        sc = rd("output/server/bench_final.csv").query("method == 'galad'").score_ms_fp32.mean()
+        mac("SpeedTrtThroughput", 1000 / (bt[("tensorrt_bf16", "galad", 1)] + sc), "{:.0f}", "images/s, TensorRT backbone + GaLAD scoring")
 RS, IA = Path("output/region_size.csv"), Path("output/interior_aupro.csv")  # analyze_region_size.py (exploratory)
 if RS.exists() and not K.empty:
     r = rd(RS)
