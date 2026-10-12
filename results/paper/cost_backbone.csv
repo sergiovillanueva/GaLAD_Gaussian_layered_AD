@@ -1,0 +1,4 @@
+setting,batch,ms_per_image,gpu
+pipeline,1,43.58,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+model,1,34.59,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+model,16,25.58,NVIDIA GeForce RTX 3080 Ti Laptop GPU
