@@ -88,6 +88,7 @@ LaTeX macro and value (percent or points).
 - `\FitB` = 8.2
 - `\FitE` = 19.8
 - `\Forward` = 46
+- `\FpRelDiff` = 0.04
 - `\FullFive` = 2.3
 - `\IntFive` = 2.5
 - `\LocAllAdinoL` = 10.6

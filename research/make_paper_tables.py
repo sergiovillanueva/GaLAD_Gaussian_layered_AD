@@ -303,6 +303,7 @@ if bf.exists():
         mac(f"Bank{'ABCDE'[n - 1]}", a_.state_mib.mean())
     mac("Forward", bb.forward_ms.mean(), "{:.0f}"); mac("ScoreGalad", gl.score_ms_fp32.mean())
     mac("ScoreAdino", ad.score_ms.mean()); mac("StateGalad", gl.state_mib.mean())
+    mac("FpRelDiff", gl.fp32_max_rel_diff.max() * 100, "{:.2f}", "largest relative difference, float32 vs float64 image scores (%)")
     (OUT / "cost.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 # ---------------------------------------------------------------- Appendix: per-category AP and AU-PRO
