@@ -27,8 +27,8 @@ import torch.nn.functional as F  # noqa: E402
 from PIL import Image  # noqa: E402
 
 E, G = SE.E, SE.G
-BENCH = ["mvtec_AD", "VisA", "mvtec_loco_AD", "AutoVI", "btad", "GoodsAD"]
-_res = SE.csv.DictReader(open("output/server_run/l_square.csv"))
+BENCH = ["mvtec_AD", "VisA", "AutoVI", "btad", "GoodsAD", "mvtec_loco_AD", "mvtec_ad_2"]
+_res = SE.csv.DictReader(open("output/server/final_square.csv"))  # final GaLAD version (GAUSS_MAX_ITER=30 GAUSS_SKIP=0)
 _pro = {}
 for r in _res:
     if r["method"] == "galad" and r["aupro_30"]:
@@ -40,7 +40,7 @@ for b in BENCH:
     med = np.median(list(vals.values()))
     CATS.append(min(vals, key=lambda c: abs(vals[c] - med)))
 NAMES = {"mvtec_AD": "MVTec AD", "VisA": "VisA", "mvtec_loco_AD": "MVTec LOCO", "AutoVI": "AutoVI", "btad": "BTAD",
-         "GoodsAD": "GoodsAD"}
+         "GoodsAD": "GoodsAD", "mvtec_ad_2": "MVTec AD 2"}
 N, SEED = 2, 0
 
 
@@ -51,7 +51,7 @@ def to_pixels(grids, kind, patch):
                                              interpolation=SE.cv2.INTER_LINEAR), sigma=4) for x in grids]
 
 
-CACHE = SE.Path("output/qualitative_maps.npz")
+CACHE = SE.Path("output/qualitative_maps_v2.npz")
 SE.log(f"selected categories: {CATS}")
 rows = []
 if CACHE.exists():
@@ -71,7 +71,7 @@ for ds in CATS if not rows else []:
     test = net.extract([net.prep(Image.open(info[i]["path"]).convert("RGB")) for i in idx])
     g_views, a_views = SE.refs_for(net, E.sample_train(train_all, N, SEED))
     models, _ = SE.galad_fit(net.extract(g_views, dtype=torch.float32), net, SEED)
-    _, g_grids = SE.galad_score(models, test, net)
+    _, g_grids, _ = SE.galad_score(models, test, net)
     feats = net.extract(a_views, dtype=torch.float32)
     bank = F.normalize(torch.cat([f["last"] for f, _ in feats]).to(SE.DEVICE), dim=-1)
     _, a_grids = SE.adino_score(bank, test)
@@ -113,5 +113,5 @@ fig.colorbar(im, cax=cax, orientation="horizontal")
 cax.tick_params(labelsize=6)
 cax.set_xlabel("map / 99th percentile of the maps of normal images", fontsize=6, labelpad=1)
 out = SE.Path("paper/electronics/figs/qualitative.pdf")
-plt.savefig(out, dpi=200)
+plt.savefig(out, dpi=200, bbox_inches="tight", pad_inches=0.03)
 SE.log(f"wrote {out}")

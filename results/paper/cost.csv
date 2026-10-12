@@ -1,0 +1,19 @@
+backbone,resize,dataset,method,n_train,state_mib,ref_extract_s,fit_s,forward_ms,score_ms,score_ms_fp32,fp32_max_rel_diff,peak_gpu_mib,gpu
+dinov3l,square,mvtec_AD/bottle,galad,1,5.04,0.26,3.95,45.7,12.16,2.77,1.01e-04,2608,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,mvtec_AD/bottle,adino,1,24.50,0.26,0.04,45.7,1.23,1.23,0.00e+00,2503,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,mvtec_AD/bottle,galad,2,5.04,0.50,8.06,45.7,11.97,2.81,1.26e-04,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,mvtec_AD/bottle,adino,2,49.00,0.49,0.01,45.7,1.98,1.98,0.00e+00,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,mvtec_AD/bottle,galad,5,5.04,1.28,19.66,45.7,11.84,2.87,1.13e-04,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,mvtec_AD/bottle,adino,5,122.50,1.25,0.04,45.7,4.08,4.08,0.00e+00,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,VisA/candle,galad,1,5.04,0.25,4.29,46.1,12.06,3.45,3.81e-04,2608,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,VisA/candle,adino,1,24.50,0.26,0.00,46.1,1.47,1.47,0.00e+00,2503,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,VisA/candle,galad,2,5.04,0.51,8.13,46.1,12.01,3.21,4.20e-04,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,VisA/candle,adino,2,49.00,0.49,0.01,46.1,1.93,1.93,0.00e+00,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,VisA/candle,galad,5,5.04,1.28,19.79,46.1,12.01,3.25,3.25e-04,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,VisA/candle,adino,5,122.50,1.26,0.04,46.1,4.10,4.10,0.00e+00,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,AutoVI/engine_wiring,galad,1,5.04,0.26,4.37,47.3,11.99,2.96,3.15e-04,2608,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,AutoVI/engine_wiring,adino,1,24.50,0.26,0.00,47.3,1.40,1.40,0.00e+00,2503,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,AutoVI/engine_wiring,galad,2,5.04,0.50,8.33,47.3,12.16,3.14,2.33e-04,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,AutoVI/engine_wiring,adino,2,49.00,0.49,0.01,47.3,1.98,1.98,0.00e+00,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,AutoVI/engine_wiring,galad,5,5.04,1.28,19.94,47.3,12.20,3.12,2.66e-04,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU
+dinov3l,square,AutoVI/engine_wiring,adino,5,122.50,1.25,0.04,47.3,4.15,4.15,0.00e+00,3290,NVIDIA GeForce RTX 3080 Ti Laptop GPU

@@ -1,7 +1,7 @@
 """GaLAD: Gaussian mixture with shrunk covariances and chi-square tail score (Section 3 of the paper).
 
-Per layer: PCA of the reference patches (components 3 to 258, d = 256); Gaussian mixture with K = 12
-full-covariance components fitted by EM, where the covariance update is replaced by
+Per layer: PCA of the reference patches (the d = 256 leading components); Gaussian mixture with K = 12
+full-covariance components fitted by EM (at most 30 iterations), where the covariance update is replaced by
     Sigma_k = (n_k C_k + kappa Lambda) / (n_k + kappa),  kappa = 2000,  Lambda = diag(PCA variances)  (Eq. 1)
 Patch score: s(x) = -log P(chi2_d >= min_k delta_k^2) (Eq. 2, Wilson-Hilferty). Map: Gaussian smoothing
 (sigma = 1 patch). Image score: 95th percentile, mean over the two layers. All fitting in float64.
@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from scipy.ndimage import gaussian_filter, zoom
 from scipy.special import log_ndtr
 
-DIM, SKIP, RIDGE = 256, 2, 1e-2
+DIM, RIDGE = 256, 1e-2
 
 
 def chi2_tail_score(x, d=DIM):
@@ -43,7 +43,7 @@ def kmeans_labels(X, k, gen, iters=100):
 class ShrunkMixture:
     """Gaussian mixture fitted by EM with the shrunk covariance update of Eq. 1."""
 
-    def __init__(self, k, kappa, prior, seed, tol=1e-3, max_iter=200):
+    def __init__(self, k, kappa, prior, seed, tol=1e-3, max_iter=30):
         self.k, self.kappa, self.prior, self.seed, self.tol, self.max_iter = k, kappa, prior, seed, tol, max_iter
 
     def _m_step(self, X, resp):
@@ -87,9 +87,9 @@ class LayerModel:
         self.mean = X.mean(0)
         Xc = X - self.mean
         evals, evecs = torch.linalg.eigh(Xc.T @ Xc / (X.shape[0] - 1))
-        order = torch.argsort(evals, descending=True)[: DIM + SKIP]
-        self.comp = evecs[:, order][:, SKIP:]
-        prior = torch.diag(evals[order][SKIP:])
+        order = torch.argsort(evals, descending=True)[:DIM]
+        self.comp = evecs[:, order]
+        prior = torch.diag(evals[order])
         Z = self.project(X)
         self.k = min(k, max(2, Z.shape[0] // (DIM + 10)))  # at most one component per 266 patches
         self.gmm = ShrunkMixture(self.k, kappa, prior, seed).fit(Z)
