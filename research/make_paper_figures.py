@@ -54,7 +54,7 @@ for ax, metric, title in ((axes[0], "aupro_30", "(a) AU-PRO (FPR $\\leq$ 0.3)"),
     ax.tick_params(labelsize=7)
     ax.grid(alpha=0.3, lw=0.5)
     ax.spines[["top", "right"]].set_visible(False)
-axes[0].set_ylabel("%", fontsize=8)
+axes[0].set_ylabel("AU-PRO (%)", fontsize=8)
 h, l = axes[0].get_legend_handles_labels()
 fig.legend(h, l, fontsize=7, frameon=False, loc="lower center", ncol=len(l), bbox_to_anchor=(0.5, 0))
 plt.tight_layout(pad=0.4, rect=(0, 0.08, 1, 1))
@@ -69,24 +69,29 @@ cat = {m: t.mean(axis=1) * 100 for m, t in cat.items() if not t.isna().any().any
 comps = [m for m in ("official", "adino", "patchcore") if m in cat]
 DEVB = ("mvtec_AD", "VisA")
 dev = np.array([c.split("/")[0] in DEVB for c in CATS])
-fig, axes = plt.subplots(1, len(comps), figsize=(2.45 * len(comps), 2.55))
-lo = min(min(cat[m].min() for m in comps), cat["galad"].min()) - 4  # common scale for all panels
+fig, axes = plt.subplots(1, len(comps), figsize=(2.45 * len(comps), 2.95))
+lo = 0
 for i, (ax, m) in enumerate(zip(np.atleast_1d(axes), comps)):
     x, y = cat[m].values, cat["galad"].values
+    ax.fill_between([lo, 100], [lo, 100], 100, color=STYLE["galad"][1], alpha=0.08, lw=0, zorder=0)  # GaLAD better
     ax.plot([lo, 100], [lo, 100], color="#888888", lw=0.8, ls="--", zorder=1)
-    ax.scatter(x[dev], y[dev], s=16, marker="o", color="#333333", lw=0, zorder=3, label="Development")
-    ax.scatter(x[~dev], y[~dev], s=18, marker="^", facecolor="white", edgecolor="#333333", lw=0.8, zorder=3,
-               label="External")
+    ax.scatter(x[dev], y[dev], s=20, marker="o", color="#333333", lw=0, zorder=3, label="Development category")
+    ax.scatter(x[~dev], y[~dev], s=22, marker="^", facecolor="white", edgecolor="#333333", lw=0.8, zorder=3,
+               label="External category")
     d = y - x
-    ax.set_title(f"({'abc'[i]}) GaLAD higher in {(d > .5).sum()}, lower in {(d < -.5).sum()}", fontsize=7, loc="left")
-    ax.set_xlim(lo, 100), ax.set_ylim(lo, 100), ax.set_aspect("equal")
-    ax.set_xlabel(f"{STYLE[m][0]}, AU-PRO (%)", fontsize=7)
-    ax.tick_params(labelsize=6.5)
+    ax.set_title(f"({'abc'[i]}) GaLAD vs. {STYLE[m][0]}\nGaLAD better in {(d > .5).sum()}, worse in {(d < -.5).sum()}",
+                 fontsize=7.5, loc="left")
+    ax.set_xlim(lo, 101), ax.set_ylim(lo, 101), ax.set_aspect("equal")
+    ax.set_xlabel(f"{STYLE[m][0]}, AU-PRO (%)", fontsize=7.5)
+    ax.tick_params(labelsize=7)
     ax.grid(alpha=0.3, lw=0.5)
     ax.spines[["top", "right"]].set_visible(False)
-np.atleast_1d(axes)[0].set_ylabel("GaLAD, AU-PRO (%)", fontsize=7)
-np.atleast_1d(axes)[-1].legend(fontsize=6.5, frameon=False, loc="lower right", handletextpad=0.2)
-plt.tight_layout(pad=0.4)
+np.atleast_1d(axes)[0].set_ylabel("GaLAD, AU-PRO (%)", fontsize=7.5)
+h, l = np.atleast_1d(axes)[0].get_legend_handles_labels()
+h.append(plt.Rectangle((0, 0), 1, 1, color=STYLE["galad"][1], alpha=0.15, lw=0))
+l.append("Area where GaLAD localizes better")
+fig.legend(h, l, fontsize=7.5, frameon=False, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0))
+plt.tight_layout(pad=0.4, rect=(0, 0.07, 1, 1))
 plt.savefig(FIG / "scatter.pdf")
 print(f"wrote {FIG / 'scatter.pdf'} ({', '.join(comps)})")
 
@@ -95,7 +100,7 @@ q = area.quantile([1 / 3, 2 / 3]).values
 groups = [("Small", area <= q[0], f"$\\leq${q[0]:.1f}%"), ("Medium", (area > q[0]) & (area <= q[1]), f"{q[0]:.1f}–{q[1]:.1f}%"),
           ("Large", area > q[1], f"$>${q[1]:.1f}%")]
 rng = np.random.default_rng(0)
-fig, ax = plt.subplots(figsize=(3.5, 2.4))
+fig, ax = plt.subplots(figsize=(4.3, 2.9))
 w = 0.8 / len(comps)
 for j, m in enumerate(comps):
     for i, (_, sel, _) in enumerate(groups):
@@ -107,13 +112,13 @@ for j, m in enumerate(comps):
                     color="#333333", lw=0.8, capsize=2, zorder=3)
 ax.axhline(0, color="#333333", lw=0.8)
 ax.set_xticks(range(len(groups)))
-ax.set_xticklabels([f"{g}\n{r}" for g, s, r in groups], fontsize=6.5)
-ax.set_xlabel("Median defect area of the category (share of the image)", fontsize=7)
-ax.set_ylabel("AU-PRO gain of GaLAD (points)", fontsize=7)
-ax.tick_params(axis="y", labelsize=6.5)
+ax.set_xticklabels([f"{g} defects\n{r} of the image\n{s.sum()} categories" for g, s, r in groups], fontsize=7.5)
+ax.set_ylabel("AU-PRO gain of GaLAD (points)", fontsize=8)
+ax.tick_params(axis="y", labelsize=7.5)
 ax.grid(axis="y", alpha=0.3, lw=0.5)
 ax.spines[["top", "right"]].set_visible(False)
-ax.legend(fontsize=6.5, frameon=False, title="GaLAD minus", title_fontsize=6.5)
+ax.legend(fontsize=7.5, frameon=False, title="Gain of GaLAD over:", title_fontsize=7.5, loc="upper right")
+ax.set_ylim(top=ax.get_ylim()[1] * 1.45)  # room for the legend above the bars
 plt.tight_layout(pad=0.4)
 plt.savefig(FIG / "size.pdf")
 print(f"wrote {FIG / 'size.pdf'}")
