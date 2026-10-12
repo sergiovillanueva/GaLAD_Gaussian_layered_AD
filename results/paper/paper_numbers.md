@@ -88,6 +88,7 @@ LaTeX macro and value (percent or points).
 - `\FitB` = 8.2
 - `\FitE` = 19.8
 - `\Forward` = 46
+- `\ForwardBatch` = 25.6
 - `\FpRelDiff` = 0.04
 - `\FullFive` = 2.3
 - `\IntFive` = 2.5
@@ -174,6 +175,7 @@ LaTeX macro and value (percent or points).
 - `\SizeSmallLocPCLo` = 11.0
 - `\SizeSmallMax` = 0.4
 - `\StateGalad` = 5.0
+- `\Throughput` = 35
 - `\VtwoDet` = -0.4
 - `\VtwoLoc` = 5.7
 - `\VtwoLocFive` = 4.7

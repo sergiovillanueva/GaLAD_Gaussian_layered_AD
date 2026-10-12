@@ -304,6 +304,11 @@ if bf.exists():
     mac("Forward", bb.forward_ms.mean(), "{:.0f}"); mac("ScoreGalad", gl.score_ms_fp32.mean())
     mac("ScoreAdino", ad.score_ms.mean()); mac("StateGalad", gl.state_mib.mean())
     mac("FpRelDiff", gl.fp32_max_rel_diff.max() * 100, "{:.2f}", "largest relative difference, float32 vs float64 image scores (%)")
+    bb = Path("output/bench_backbone.csv")  # bench_backbone.py: backbone alone, autocast, batches of 16 images
+    if bb.exists():
+        fb = rd(bb).query("setting == 'model' and batch == 16").ms_per_image.iloc[0]
+        mac("ForwardBatch", fb, "{:.1f}", "backbone ms per image, batches of 16")
+        mac("Throughput", 1000 / (fb + gl.score_ms_fp32.mean()), "{:.0f}", "images per second, backbone in batches + GaLAD scoring")
     (OUT / "cost.tex").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 # ---------------------------------------------------------------- Appendix: per-category AP and AU-PRO
