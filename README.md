@@ -2,7 +2,7 @@
 
 Code and results of the paper
 
-> S. Villanueva López, E. Soria-Olivas, M. Sánchez-Montañés. *GaLAD: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization.* Submitted to *Electronics* (MDPI), 2026.
+> S. Villanueva López, E. Soria-Olivas, M. Sánchez-Montañés. *GaLAD: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization.* Submitted to *Machine Learning and Knowledge Extraction* (MDPI), 2026.
 
 GaLAD sets up anomaly detection for a new product from one to five images of good parts and shows where the
 defect is. A frozen DINOv3 ViT-L/16 backbone provides the patch features of two hidden layers; each reference
@@ -129,7 +129,7 @@ The operating threshold has to be chosen for each product on normal images of th
 @article{villanueva2026galad,
   title   = {{GaLAD}: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization},
   author  = {Villanueva L{\'o}pez, Sergio and Soria-Olivas, Emilio and S{\'a}nchez-Monta{\~n}{\'e}s, Manuel},
-  journal = {Electronics},
+  journal = {Machine Learning and Knowledge Extraction},
   year    = {2026},
   note    = {Submitted}
 }
