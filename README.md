@@ -1,8 +1,15 @@
 # GaLAD: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization
 
+![Paper: under review](https://img.shields.io/badge/Paper-under%20review-lightgrey)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
+
 Code and results of the paper
 
-> S. Villanueva López, E. Soria-Olivas, M. Sánchez-Montañés. *GaLAD: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization.* Submitted to *Machine Learning and Knowledge Extraction* (MDPI), 2026.
+> S. Villanueva López, E. Soria-Olivas, M. Sánchez-Montañés. *GaLAD: Compact Gaussian Mixtures for Few-Shot
+> Industrial Anomaly Detection and Localization.* Manuscript under review, 2026.
+
+![Anomaly maps](docs/examples.png)
 
 GaLAD sets up anomaly detection for a new product from one to five images of good parts and shows where the
 defect is. A frozen DINOv3 ViT-L/16 backbone provides the patch features of two hidden layers; each reference
@@ -40,8 +47,6 @@ The gains are largest on the smallest defects.
 ![Localization per category](docs/scatter.png)
 
 ![Gain by defect size](docs/size.png)
-
-![Anomaly maps](docs/examples.png)
 
 ## Repository
 
@@ -129,12 +134,25 @@ The operating threshold has to be chosen for each product on normal images of th
 @article{villanueva2026galad,
   title   = {{GaLAD}: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization},
   author  = {Villanueva L{\'o}pez, Sergio and Soria-Olivas, Emilio and S{\'a}nchez-Monta{\~n}{\'e}s, Manuel},
-  journal = {Machine Learning and Knowledge Extraction},
   year    = {2026},
-  note    = {Submitted}
+  note    = {Manuscript under review}
 }
 ```
 
 ## License
 
 MIT (see `LICENSE`). The datasets keep their own licenses.
+
+## Related repositories
+
+This repository is one of five from my industrial PhD on anomaly detection for visual inspection (Universitat de València and Eines Vision Systems, 2026). All five work on frozen foundation-model features and do not train a network for each product.
+
+| Repository | Paper | Question |
+|---|---|---|
+| [rgb-ensembles-industrial-uad](https://github.com/sergiovillanueva/rgb-ensembles-industrial-uad) | Electronics, 2026 | Does combining several detectors improve defect localization on a real automotive benchmark? |
+| **GaLAD_Gaussian_layered_AD** (this one) | under review | How do you set up a new product from one to five good images and still find small defects? |
+| [memory-pollution-ad](https://github.com/sergiovillanueva/memory-pollution-ad) | MAKE, 2026 | What goes wrong when many products share one memory bank, and how do you fix it? |
+| [patch-purification-fewshot](https://github.com/sergiovillanueva/patch-purification-fewshot) | Electronics, 2026 | What happens if a defective part slips into the reference images at commissioning? |
+| [pc-reg](https://github.com/sergiovillanueva/pc-reg) | Electronics, 2026 | How do you detect parts that look fine but are missing or in the wrong place? |
+
+Sergio Villanueva López · [LinkedIn](https://www.linkedin.com/in/sergiovillanuevalopez)
