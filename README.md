@@ -1,7 +1,7 @@
 # GaLAD: Compact Gaussian Mixtures for Few-Shot Industrial Anomaly Detection and Localization
 
 ![Paper: under review](https://img.shields.io/badge/Paper-under%20review-lightgrey)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License: non-commercial, Eines](https://img.shields.io/badge/License-non--commercial%20%C2%B7%20Eines-red.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue)
 
 Code and results of the paper
@@ -141,7 +141,11 @@ The operating threshold has to be chosen for each product on normal images of th
 
 ## License
 
-MIT (see `LICENSE`). The datasets keep their own licenses.
+Copyright (c) 2026 Eines Systems S.L.U. (Eines Vision Systems). The code was developed at
+Eines Vision Systems within an industrial PhD with the Universitat de València. It may be
+used for non-commercial research and teaching and to reproduce the results of the paper.
+Commercial use requires prior written permission from Eines. See [LICENSE](LICENSE).
+The datasets keep their own licenses.
 
 ## Related repositories
 
